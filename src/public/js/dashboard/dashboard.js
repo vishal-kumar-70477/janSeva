@@ -137,7 +137,7 @@ const V = {
 function validateField(el){
   const rule = el.dataset.validate;
   if(!rule) return true;
-  const wrap = el.closest('.field');
+  const wrap = el.closest('.field') || el.parentElement;
   let msg='';
   if(el.type==='checkbox'){ msg = el.checked ? '' : 'Please accept the terms to continue.'; }
   else if(rule==='confirm'){
@@ -146,6 +146,7 @@ function validateField(el){
   } else {
     msg = V[rule] ? V[rule](el.value) : '';
   }
+  if(!wrap) return !msg;
   wrap.classList.toggle('error', !!msg);
   const errEl = wrap.querySelector('.err');
   if(errEl) errEl.textContent = msg;
@@ -159,7 +160,10 @@ function validateForm(form){
 function wireForm(){
   document.querySelectorAll('#modeArea [data-validate]').forEach(el=>{
     el.addEventListener('blur', ()=>validateField(el));
-    el.addEventListener('input', ()=>{ if(el.closest('.field').classList.contains('error')) validateField(el); });
+    el.addEventListener('input', ()=>{
+      const wrap = el.closest('.field') || el.parentElement;
+      if(wrap?.classList.contains('error')) validateField(el);
+    });
   });
 }
 
@@ -277,16 +281,7 @@ function renderPatientStep(step){
       {name:'ecNumber',label:'Emergency Contact Number',type:'tel',placeholder:'10-digit mobile number',validate:'mobile'},
       {name:'ecRelation',label:'Relationship',type:'select',options:['Father','Mother','Brother','Sister','Spouse','Guardian','Other'],validate:'required'},
     ]);
-  } else if(step===3){
-    body = `<p class="text-sm text-ink2 -mt-1 mb-4">Only baseline information is collected here — you don't need to list every medical detail.</p>` +
-      grid([
-      {name:'allergies',label:'Known Allergies',type:'text',placeholder:'e.g. Penicillin (or "None")',optional:true},
-      {name:'conditions',label:'Existing Medical Conditions',type:'text',placeholder:'e.g. Hypertension (or "None")',optional:true},
-      {name:'medications',label:'Current Medications',type:'text',placeholder:'e.g. Amlodipine 5mg (or "None")',optional:true},
-      {name:'pastConditions',label:'Previous Major Medical Conditions',type:'text',placeholder:'Optional',optional:true},
-      {name:'surgeries',label:'Previous Surgeries',type:'text',placeholder:'Optional',optional:true},
-    ], false) + field({name:'docs',label:'Upload Medical Documents',type:'file',optional:true,hint:'Prescription, report, discharge summary, etc.'});
-  } else if(step===4){
+  }  else if(step===4){
     body = grid([
       {name:'password',label:'Create Password',type:'password',placeholder:'At least 8 characters',validate:'password'},
       {name:'confirmPassword',label:'Confirm Password',type:'password',placeholder:'Re-enter password',validate:'confirm',matches:'password'},
