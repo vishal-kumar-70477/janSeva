@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>JanSeva — People First. Health Always.</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={theme:{extend:{colors:{teal1:'#008F83',teal2:'#16A394',teal3:'#006F68',mint:'#E8F7F3',sgreen:'#DFF3E8',bg:'#F8FCFB',ink:'#263B3A',ink2:'#667573',line:'#DCEBE7',emerg:'#EF5350',emergD:'#D9363E',ok:'#20A56B',warn:'#F4A340'},fontFamily:{sans:['Plus Jakarta Sans','system-ui','sans-serif'],hand:['Caveat','cursive']}}}}
+</script>
+<link rel="stylesheet" href="/css/dashboard/dashboard.css">
+</head>
+<body class="antialiased">
+<div id="mainSite">
+<!-- NAV -->
+<header class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-line" style="top:env(safe-area-inset-top,0px)">
+ <nav class="max-w-7xl mx-auto px-4 sm:px-6 h-[72px] flex items-center justify-between gap-4" aria-label="Main">
+  <a href="#home" class="flex items-center gap-2 shrink-0"><img src="/assets/01-janseva-logo.png" alt="JanSeva logo" class="h-11 w-auto"></a>
+  <ul class="hidden lg:flex items-center gap-6 text-sm font-medium text-ink2">
+   <li><a class="hover:text-teal1" href="#home">Home</a></li><li><a class="hover:text-teal1" href="#about">About</a></li>
+   <li><a class="hover:text-teal1" href="#how">How It Works</a></li><li><a class="hover:text-teal1" href="#features">Features</a></li>
+   <li><a class="hover:text-teal1" href="#patients">For Patients</a></li><li><a class="hover:text-teal1" href="#doctors">For Doctors</a></li>
+   <li><a class="hover:text-teal1" href="#hospitals">For Hospitals</a></li><li><a class="hover:text-teal1" href="#contact">Contact</a></li>
+  </ul>
+  <div class="flex items-center gap-2">
+   <button onclick="openAuth()" class="btn hidden sm:inline-flex items-center gap-2 rounded-full border-2 border-teal1 bg-white text-teal1 px-5 py-2.5 text-sm font-semibold hover:bg-teal1 hover:text-white">Login / Sign Up</button>
+   <button id="mmenu-toggle" class="lg:hidden p-2 rounded-lg border border-line" aria-label="Open menu"><i data-lucide="menu"></i></button>
+  </div>
+ </nav>
+ <div id="mmenu" class="hidden lg:hidden border-t border-line bg-white px-6 py-4">
+  <div class="grid gap-3 text-sm font-medium text-ink2">
+   <a href="#home">Home</a><a href="#about">About</a><a href="#how">How It Works</a><a href="#features">Features</a>
+   <a href="#patients">For Patients</a><a href="#doctors">For Doctors</a><a href="#hospitals">For Hospitals</a><a href="#contact">Contact</a>
+   <button onclick="openAuth()" class="mt-2 rounded-full bg-teal1 text-white px-5 py-3 font-semibold">Login / Sign Up</button>
+  </div>
+ </div>
+</header>
+
+<!-- HERO -->
+<section id="home" class="relative overflow-hidden bg-gradient-to-b from-mint/70 to-bg">
+ <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-14 pb-16 grid lg:grid-cols-[1fr_1.15fr] gap-12 items-center">
+  <div class="reveal">
+   <p class="text-xs font-bold tracking-[.18em] text-teal1 uppercase mb-4">A Smarter Emergency Care Ecosystem</p>
+   <h1 class="text-4xl sm:text-5xl xl:text-[3.4rem] font-extrabold leading-[1.08]">Emergency Care,<br><span class="text-teal1">Before You Reach<br>the Hospital.</span></h1>
+   <p class="mt-5 text-lg text-ink2 max-w-xl">JanSeva connects relevant patient information, hospital readiness and medical teams before the patient arrives—helping care begin at the right time.</p>
+   <div class="mt-8 flex flex-wrap gap-3">
+    <button onclick="openAuth()" class="btn rounded-full bg-teal1 text-white px-7 py-3.5 font-semibold shadow-lg shadow-teal1/25">Get Started →</button>
+    <a href="#how" class="btn rounded-full bg-white border border-line px-7 py-3.5 font-semibold text-ink">See How It Works →</a>
+   </div>
+   <ul class="mt-9 flex flex-wrap gap-x-7 gap-y-3 text-sm font-medium text-ink2">
+    <li class="flex items-center gap-2 text-teal3"><i data-lucide="shield-check" class="text-teal1"></i>Secure &amp; Privacy Focused</li>
+    <li class="flex items-center gap-2 text-teal3"><i data-lucide="activity" class="text-teal1"></i>Connected Healthcare</li>
+    <li class="flex items-center gap-2 text-teal3"><i data-lucide="heart-handshake" class="text-emerg"></i>People First</li>
+   </ul>
+  </div>
+  <div class="relative reveal">
+   <div class="zoom rounded-[28px] overflow-hidden border border-line shadow-[0_30px_70px_-35px_rgba(0,111,104,.5)]">
+    <img src="/assets/02-hero-hospital.png" alt="Paramedics moving a patient into a JanSeva-connected hospital emergency entrance">
+   </div>
+   <span class="font-hand text-teal1 text-3xl absolute -top-6 left-4 hidden md:block">Care Starts Earlier</span>
+   <div class="float absolute -left-3 top-16 bg-white rounded-2xl border border-line shadow-xl px-4 py-3 hidden sm:block">
+    <p class="text-[11px] text-ink2 font-semibold">Patient Information</p><p class="text-sm font-bold text-ok">Connected ✓</p></div>
+   <div class="float absolute -right-2 top-6 bg-white rounded-2xl border border-line shadow-xl px-4 py-3 hidden sm:block" style="animation-delay:1s">
+    <p class="text-[11px] text-ink2 font-semibold">Hospital</p><p class="text-sm font-bold text-ok">Ready ✓</p></div>
+   <div class="float absolute -left-2 bottom-10 bg-white rounded-2xl border border-line shadow-xl px-4 py-3 hidden sm:block" style="animation-delay:2s">
+    <p class="text-[11px] text-ink2 font-semibold">Doctor</p><p class="text-sm font-bold text-ok">Notified ✓</p></div>
+   <div class="float absolute right-4 -bottom-5 bg-white rounded-2xl border border-line shadow-xl px-4 py-3" style="animation-delay:1.5s">
+    <p class="text-[11px] text-ink2 font-semibold">Specialist</p><p class="text-sm font-bold text-teal1">Support Available</p></div>
+  </div>
+ </div>
+</section>
+
+<!-- WHY -->
+<section id="about" class="py-20 bg-white border-y border-line">
+ <div class="max-w-7xl mx-auto px-4 sm:px-6">
+  <div class="max-w-3xl reveal">
+   <h2 class="text-3xl sm:text-4xl font-extrabold leading-tight">More Than an Ambulance.<br><span class="text-teal1">A Smarter Care Journey.</span></h2>
+   <p class="mt-4 text-ink2 text-lg">Emergency care is not just about reaching the hospital. The right information and preparation can help the receiving team get ready earlier.</p>
+  </div>
+  <div id="features" class="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+   <article class="card reveal rounded-3xl border border-line bg-mint p-7"><div class="w-12 h-12 rounded-2xl bg-white grid place-items-center text-teal1 mb-4"><i data-lucide="file-text"></i></div><h3 class="font-bold text-lg">Relevant Health History</h3><p class="mt-2 text-sm text-ink2">Authorized healthcare professionals can access relevant patient information when it is needed for emergency care.</p></article>
+   <article class="card reveal rounded-3xl border border-line bg-sgreen p-7"><div class="w-12 h-12 rounded-2xl bg-white grid place-items-center text-teal1 mb-4"><i data-lucide="hospital"></i></div><h3 class="font-bold text-lg">Smart Hospital Coordination</h3><p class="mt-2 text-sm text-ink2">Coordinate the incoming emergency with hospital capability, resources and readiness.</p></article>
+   <article class="card reveal rounded-3xl border border-line bg-white p-7"><div class="w-12 h-12 rounded-2xl bg-mint grid place-items-center text-teal1 mb-4"><i data-lucide="stethoscope"></i></div><h3 class="font-bold text-lg">Doctor Ready Before Arrival</h3><p class="mt-2 text-sm text-ink2">Doctors receive relevant emergency information in advance so they can prepare before the patient arrives.</p></article>
+   <article class="card reveal rounded-3xl border border-line p-7" style="background:#FFF8F0"><div class="w-12 h-12 rounded-2xl bg-white grid place-items-center text-warn mb-4"><i data-lucide="users"></i></div><h3 class="font-bold text-lg">Specialist Escalation</h3><p class="mt-2 text-sm text-ink2">When additional expertise is needed, the case can be escalated to an appropriate specialist.</p></article>
+  </div>
+ </div>
+</section>
+
+<!-- USP -->
+<section class="py-20">
+ <div class="max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-12 items-center">
+  <div class="reveal zoom rounded-[28px] overflow-hidden border border-line shadow-2xl shadow-teal3/10"><img src="/assets/03-ambulance.png" alt="JanSeva ambulance arriving at a hospital emergency entrance"></div>
+  <div class="reveal">
+   <h2 class="text-3xl sm:text-4xl font-extrabold">Care Begins <span class="text-teal1">Before Arrival.</span></h2>
+   <p class="mt-3 text-ink2">JanSeva helps the receiving healthcare team prepare while the patient is on the way.</p>
+   <ol class="mt-8 relative border-l-2 border-dashed border-teal2/40 pl-6 space-y-4">
+    <li class="reveal flex items-center gap-3"><span class="absolute -left-[9px] w-4 h-4 rounded-full bg-emerg"></span><span class="font-semibold">Emergency Registered</span></li>
+    <li class="reveal flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-teal2 -ml-[29px]"></span><span class="font-semibold">Patient Identified</span></li>
+    <li class="reveal flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-teal2 -ml-[29px]"></span><span class="font-semibold">Current Condition Connected</span></li>
+    <li class="reveal flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-teal2 -ml-[29px]"></span><span class="font-semibold">Relevant History Retrieved</span></li>
+    <li class="reveal flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-teal2 -ml-[29px]"></span><span class="font-semibold">Hospital Prepared</span></li>
+    <li class="reveal flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-teal2 -ml-[29px]"></span><span class="font-semibold">Doctor Notified</span></li>
+    <li class="reveal flex items-center gap-3"><span class="w-2 h-2 rounded-full bg-teal2 -ml-[29px]"></span><span class="font-semibold">Specialist Available</span></li>
+    <li class="reveal flex items-center gap-3"><span class="w-4 h-4 rounded-full bg-ok -ml-[35px]"></span><span class="font-bold text-teal3">Care Begins</span></li>
+   </ol>
+  </div>
+ </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" class="py-20 bg-white border-y border-line">
+ <div class="max-w-7xl mx-auto px-4 sm:px-6 text-center">
+  <p class="text-xs font-bold tracking-[.18em] text-teal1 uppercase">How It Works</p>
+  <h2 class="mt-3 text-3xl sm:text-4xl font-extrabold">From Emergency to Treatment — One Connected Journey</h2>
+  <div class="mt-14 grid md:grid-cols-4 gap-8 relative text-left">
+   <div class="hidden md:block absolute top-7 left-[12%] right-[12%] h-0.5 bg-gradient-to-r from-emerg via-teal2 to-ok opacity-40"></div>
+   <div class="reveal relative"><div class="w-14 h-14 rounded-2xl bg-emerg/10 text-emerg grid place-items-center relative z-10 bg-white border border-line"><i data-lucide="siren"></i></div><p class="mt-4 text-xs font-bold text-teal1">STEP 01</p><h3 class="font-bold text-lg">Emergency Registered</h3><p class="mt-1 text-sm text-ink2">An emergency case is registered through an available emergency service.</p></div>
+   <div class="reveal relative"><div class="w-14 h-14 rounded-2xl grid place-items-center relative z-10 bg-white border border-line text-teal1"><i data-lucide="link-2"></i></div><p class="mt-4 text-xs font-bold text-teal1">STEP 02</p><h3 class="font-bold text-lg">Information Connected</h3><p class="mt-1 text-sm text-ink2">Relevant patient history and current emergency information are securely connected.</p></div>
+   <div class="reveal relative"><div class="w-14 h-14 rounded-2xl grid place-items-center relative z-10 bg-white border border-line text-teal1"><i data-lucide="building-2"></i></div><p class="mt-4 text-xs font-bold text-teal1">STEP 03</p><h3 class="font-bold text-lg">Hospital Prepared</h3><p class="mt-1 text-sm text-ink2">Hospital resources, bed availability and doctors can prepare before arrival.</p></div>
+   <div class="reveal relative"><div class="w-14 h-14 rounded-2xl grid place-items-center relative z-10 bg-white border border-line text-ok"><i data-lucide="heart-pulse"></i></div><p class="mt-4 text-xs font-bold text-teal1">STEP 04</p><h3 class="font-bold text-lg">Care Begins</h3><p class="mt-1 text-sm text-ink2">The healthcare team is ready with relevant information when the patient arrives.</p></div>
+  </div>
+ </div>
+</section>
+
+<!-- EMERGENCY PREVIEW -->
+<section class="py-20">
+ <div class="max-w-6xl mx-auto px-4 sm:px-6">
+  <h2 class="text-3xl sm:text-4xl font-extrabold text-center reveal">See What Happens While the Patient Is On the Way</h2>
+  <p class="text-center mt-3"><span class="inline-block text-[11px] font-bold uppercase tracking-wider bg-mint text-teal3 px-3 py-1 rounded-full">Product Preview — Demo Data</span></p>
+  <div class="mt-10 grid md:grid-cols-2 gap-6">
+   <div class="card reveal rounded-3xl bg-white border border-line p-7">
+    <div class="flex items-center justify-between"><p class="font-bold text-emergD flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerg animate-pulse"></span>INCOMING EMERGENCY</p><span class="text-xs font-bold bg-emerg/10 text-emergD px-3 py-1 rounded-full">PRIORITY: HIGH</span></div>
+    <dl class="mt-6 space-y-3 text-sm">
+     <div class="flex justify-between border-b border-line pb-2"><dt class="text-ink2">Patient</dt><dd class="font-semibold">Rahul Sharma</dd></div>
+     <div class="flex justify-between border-b border-line pb-2"><dt class="text-ink2">Age</dt><dd class="font-semibold">52</dd></div>
+     <div class="flex justify-between border-b border-line pb-2"><dt class="text-ink2">Current Problem</dt><dd class="font-semibold">Severe Chest Pain</dd></div>
+     <div class="flex justify-between border-b border-line pb-2"><dt class="text-ink2">Additional</dt><dd class="font-semibold">Breathing Difficulty</dd></div>
+     <div class="flex justify-between"><dt class="text-ink2">ETA</dt><dd class="font-bold text-emergD">08 min</dd></div>
+    </dl>
+   </div>
+   <div class="card reveal rounded-3xl bg-mint border border-line p-7">
+    <p class="font-bold text-teal3">HOSPITAL READINESS</p>
+    <dl class="mt-6 space-y-3 text-sm">
+     <div class="flex justify-between border-b border-white/70 pb-2"><dt class="text-ink2">Emergency Bed</dt><dd class="font-semibold text-ok">Available ✓</dd></div>
+     <div class="flex justify-between border-b border-white/70 pb-2"><dt class="text-ink2">ICU</dt><dd class="font-semibold text-ok">Available ✓</dd></div>
+     <div class="flex justify-between border-b border-white/70 pb-2"><dt class="text-ink2">Doctor</dt><dd class="font-semibold text-ok">Assigned ✓</dd></div>
+     <div class="flex justify-between"><dt class="text-ink2">Specialist</dt><dd class="font-semibold text-teal1">Available on Request</dd></div>
+    </dl>
+    <p class="mt-6 rounded-2xl bg-white text-center py-3 font-bold text-ok border border-line">Status: Ready for Arrival</p>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- PATIENT -->
+<section id="patients" class="py-20 bg-white border-y border-line">
+ <div class="max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-12 items-center">
+  <div class="reveal zoom rounded-[28px] overflow-hidden border border-line shadow-2xl shadow-teal3/10"><img src="/assets/05-patient.png" alt="A nurse reassuring a patient recovering in a hospital bed"></div>
+  <div class="reveal">
+   <h2 class="text-3xl sm:text-4xl font-extrabold">Your Health Information,<br><span class="text-teal1">Ready When It Matters.</span></h2>
+   <p class="mt-4 text-ink2">JanSeva helps connect relevant health information to authorized healthcare professionals during emergency care.</p>
+   <div class="mt-7 rounded-3xl border border-line bg-bg p-6">
+    <div class="flex items-center justify-between"><p class="font-bold text-teal3 text-sm">PATIENT SUMMARY</p><span class="text-[10px] font-bold uppercase bg-white border border-line px-2 py-1 rounded-full text-ink2">Demo Data</span></div>
+    <p class="mt-3 font-bold text-lg">Rahul Sharma <span class="text-ink2 font-medium text-sm">· 52 years · Blood Group O+</span></p>
+    <div class="mt-4 grid sm:grid-cols-2 gap-4 text-sm">
+     <div><p class="text-ink2 font-semibold">Current Problem</p><p>Severe chest pain<br>Breathing difficulty</p></div>
+     <div><p class="text-ink2 font-semibold">Relevant History</p><p>• Hypertension<br>• Previous cardiac consultation</p></div>
+     <div><p class="text-ink2 font-semibold">Allergies</p><p>• Penicillin</p></div>
+     <div><p class="text-ink2 font-semibold">Current Medication</p><p>• Amlodipine 5mg</p></div>
+    </div>
+    <button onclick="document.getElementById('timeline').scrollIntoView()" class="btn mt-5 rounded-full bg-teal1 text-white px-6 py-3 text-sm font-semibold">View Health Journey →</button>
+   </div>
+  </div>
+ </div>
+ <!-- TIMELINE -->
+ <div id="timeline" class="max-w-5xl mx-auto px-4 sm:px-6 mt-16">
+  <h3 class="text-2xl font-extrabold text-center">Medical Timeline <span class="text-xs align-middle font-bold uppercase bg-mint text-teal3 px-2 py-1 rounded-full">Demo Data</span></h3>
+  <div class="mt-8 grid sm:grid-cols-4 gap-5">
+   <div class="reveal rounded-2xl border border-line p-5 bg-bg"><p class="font-extrabold text-teal1">2022</p><p class="text-sm mt-1">Hypertension diagnosed</p></div>
+   <div class="reveal rounded-2xl border border-line p-5 bg-bg"><p class="font-extrabold text-teal1">2024</p><p class="text-sm mt-1">Cardiac consultation</p></div>
+   <div class="reveal rounded-2xl border border-line p-5 bg-bg"><p class="font-extrabold text-teal1">2025</p><p class="text-sm mt-1">Previous evaluation</p></div>
+   <div class="reveal rounded-2xl border border-emerg/40 p-5 bg-emerg/5"><p class="font-extrabold text-emergD">2026</p><p class="text-sm mt-1">Current emergency</p></div>
+  </div>
+ </div>
+</section>
+
+<!-- DOCTOR -->
+<section id="doctors" class="py-20">
+ <div class="max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-12 items-center">
+  <div class="reveal order-2 lg:order-1">
+   <h2 class="text-3xl sm:text-4xl font-extrabold">Doctors Get the Context <span class="text-teal1">Before the Patient Arrives.</span></h2>
+   <p class="mt-4 text-ink2">Instead of starting from zero, authorized doctors can review relevant information and prepare for an incoming emergency.</p>
+   <div class="mt-7 rounded-3xl border border-line bg-white p-6 shadow-xl shadow-teal3/5">
+    <p class="font-bold text-teal3 text-sm">INCOMING PATIENT</p>
+    <dl class="mt-4 space-y-2.5 text-sm">
+     <div class="flex justify-between border-b border-line pb-2"><dt class="text-ink2">Patient</dt><dd class="font-semibold">Rahul Sharma</dd></div>
+     <div class="flex justify-between border-b border-line pb-2"><dt class="text-ink2">Current Condition</dt><dd class="font-semibold">Severe Chest Pain</dd></div>
+     <div class="flex justify-between border-b border-line pb-2"><dt class="text-ink2">Medical History</dt><dd class="font-semibold text-ok">Available ✓</dd></div>
+     <div class="flex justify-between border-b border-line pb-2"><dt class="text-ink2">Hospital</dt><dd class="font-semibold text-ok">Ready ✓</dd></div>
+     <div class="flex justify-between border-b border-line pb-2"><dt class="text-ink2">Doctor</dt><dd class="font-semibold text-ok">Assigned ✓</dd></div>
+     <div class="flex justify-between"><dt class="text-ink2">Specialist</dt><dd class="font-semibold text-teal1">Request Available</dd></div>
+    </dl>
+    <div class="mt-5 flex flex-wrap gap-3">
+     <button class="btn rounded-full bg-teal1 text-white px-5 py-2.5 text-sm font-semibold">View Patient Summary</button>
+     <button class="btn rounded-full border border-teal1 text-teal1 px-5 py-2.5 text-sm font-semibold">Request Specialist</button>
+    </div>
+   </div>
+  </div>
+  <div class="reveal order-1 lg:order-2 zoom rounded-[28px] overflow-hidden border border-line shadow-2xl shadow-teal3/10"><img src="/assets/04-doctor.png" alt="A doctor standing in a JanSeva emergency care department"></div>
+ </div>
+</section>
+
+<!-- HOSPITAL -->
+<section id="hospitals" class="py-20 bg-white border-y border-line">
+ <div class="max-w-7xl mx-auto px-4 sm:px-6">
+  <h2 class="text-3xl sm:text-4xl font-extrabold text-center reveal">Prepare the Right Care Team.</h2>
+  <div class="mt-10 grid md:grid-cols-3 gap-5">
+   <div class="card reveal rounded-3xl border border-line bg-bg p-7"><div class="text-teal1 mb-3"><i data-lucide="bed"></i></div><h3 class="font-bold">Bed Availability</h3><p class="mt-3 text-sm flex justify-between"><span class="text-ink2">Emergency Bed</span><span class="font-semibold text-ok">Available ✓</span></p><p class="mt-2 text-sm flex justify-between"><span class="text-ink2">ICU Bed</span><span class="font-semibold text-ok">Available ✓</span></p></div>
+   <div class="card reveal rounded-3xl border border-line bg-bg p-7"><div class="text-teal1 mb-3"><i data-lucide="user-round-check"></i></div><h3 class="font-bold">Doctor Availability</h3><p class="mt-3 text-sm flex justify-between"><span class="text-ink2">General Physician</span><span class="font-semibold text-ok">Available ✓</span></p><p class="mt-2 text-sm flex justify-between"><span class="text-ink2">Specialist</span><span class="font-semibold text-teal1">On Request</span></p></div>
+   <div class="card reveal rounded-3xl border border-line bg-mint p-7"><div class="text-teal1 mb-3"><i data-lucide="timer"></i></div><h3 class="font-bold">Hospital Readiness</h3><p class="mt-3 text-sm flex justify-between"><span class="text-ink2">Patient ETA</span><span class="font-semibold">08 minutes</span></p><p class="mt-2 text-sm flex justify-between"><span class="text-ink2">Status</span><span class="font-bold text-ok">READY ✓</span></p></div>
+  </div>
+
+  <h2 class="mt-20 text-3xl sm:text-4xl font-extrabold text-center reveal">Coordinate the Right Hospital for the Situation.</h2>
+  <div class="mt-10 grid md:grid-cols-3 gap-5">
+   <div class="card reveal rounded-3xl border border-line p-7"><div class="flex justify-between"><h3 class="font-bold">Hospital A</h3><span class="text-sm text-ink2">3 km</span></div><ul class="mt-4 space-y-2 text-sm"><li class="flex justify-between"><span class="text-ink2">Emergency Bed</span><span class="text-ok font-semibold">Available ✓</span></li><li class="flex justify-between"><span class="text-ink2">ICU</span><span class="text-emergD font-semibold">Not available ✕</span></li><li class="flex justify-between"><span class="text-ink2">Cardiology</span><span class="text-emergD font-semibold">Not available ✕</span></li></ul></div>
+   <div class="card reveal rounded-3xl border-2 border-teal1 bg-mint p-7 relative"><span class="absolute -top-3 left-6 bg-teal1 text-white text-[10px] font-bold px-3 py-1 rounded-full">BEST CLINICAL MATCH</span><div class="flex justify-between"><h3 class="font-bold">Hospital B</h3><span class="text-sm text-ink2">6 km</span></div><ul class="mt-4 space-y-2 text-sm"><li class="flex justify-between"><span class="text-ink2">Emergency Bed</span><span class="text-ok font-semibold">Available ✓</span></li><li class="flex justify-between"><span class="text-ink2">ICU</span><span class="text-ok font-semibold">Available ✓</span></li><li class="flex justify-between"><span class="text-ink2">Cardiology</span><span class="text-ok font-semibold">Available ✓</span></li></ul></div>
+   <div class="card reveal rounded-3xl border border-line p-7"><div class="flex justify-between"><h3 class="font-bold">Hospital C</h3><span class="text-sm text-ink2">4 km</span></div><ul class="mt-4 space-y-2 text-sm"><li class="flex justify-between"><span class="text-ink2">Emergency Bed</span><span class="text-emergD font-semibold">Not available ✕</span></li><li class="flex justify-between"><span class="text-ink2">ICU</span><span class="text-ok font-semibold">Available ✓</span></li><li class="flex justify-between"><span class="text-ink2">Cardiology</span><span class="text-ink2 font-semibold">—</span></li></ul></div>
+  </div>
+  <p class="mt-6 text-center text-sm text-ink2 max-w-3xl mx-auto">Hospital coordination can consider clinical requirements, available resources, specialist availability and distance. Final decisions always remain with authorized healthcare professionals.</p>
+ </div>
+</section>
+
+<!-- SPECIALIST -->
+<section class="py-20">
+ <div class="max-w-6xl mx-auto px-4 sm:px-6 text-center">
+  <h2 class="text-3xl sm:text-4xl font-extrabold reveal">Need More Expertise?<br><span class="text-teal1">Connect the Case.</span></h2>
+  <div class="mt-10 flex flex-wrap justify-center gap-2 text-sm font-semibold text-teal3">
+   <span class="rounded-full bg-white border border-line px-4 py-2">Doctor Review</span><span class="text-teal2 self-center">→</span>
+   <span class="rounded-full bg-white border border-line px-4 py-2">Specialist Needed</span><span class="text-teal2 self-center">→</span>
+   <span class="rounded-full bg-white border border-line px-4 py-2">Specialist Request</span><span class="text-teal2 self-center">→</span>
+   <span class="rounded-full bg-white border border-line px-4 py-2">Notification</span><span class="text-teal2 self-center">→</span>
+   <span class="rounded-full bg-white border border-line px-4 py-2">Accept Case</span><span class="text-teal2 self-center">→</span>
+   <span class="rounded-full bg-teal1 text-white px-4 py-2">Consult / Coordinate Care</span>
+  </div>
+  <div class="mt-10 grid grid-cols-2 md:grid-cols-5 gap-4">
+   <div class="card reveal rounded-2xl bg-white border border-line p-5"><div class="text-teal1 grid place-items-center"><i data-lucide="heart-pulse"></i></div><p class="mt-2 font-semibold text-sm">Cardiology</p></div>
+   <div class="card reveal rounded-2xl bg-white border border-line p-5"><div class="text-teal1 grid place-items-center"><i data-lucide="brain"></i></div><p class="mt-2 font-semibold text-sm">Neurology</p></div>
+   <div class="card reveal rounded-2xl bg-white border border-line p-5"><div class="text-teal1 grid place-items-center"><i data-lucide="wind"></i></div><p class="mt-2 font-semibold text-sm">Pulmonology</p></div>
+   <div class="card reveal rounded-2xl bg-white border border-line p-5"><div class="text-teal1 grid place-items-center"><i data-lucide="bandage"></i></div><p class="mt-2 font-semibold text-sm">Trauma</p></div>
+   <div class="card reveal rounded-2xl bg-white border border-line p-5"><div class="text-teal1 grid place-items-center"><i data-lucide="activity"></i></div><p class="mt-2 font-semibold text-sm">Critical Care</p></div>
+  </div>
+ </div>
+</section>
+
+<!-- ROLES -->
+<section class="py-20 bg-white border-y border-line">
+ <div class="max-w-7xl mx-auto px-4 sm:px-6 text-center">
+  <h2 class="text-3xl sm:text-4xl font-extrabold reveal">One Platform.<br><span class="text-teal1">Different Care Teams.</span></h2>
+  <p class="mt-3 text-ink2">Choose how you want to use JanSeva.</p>
+  <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-5 text-left">
+   <div class="card reveal rounded-3xl border border-line bg-mint p-7"><div class="w-12 h-12 rounded-2xl bg-white grid place-items-center text-teal1"><i data-lucide="users"></i></div><h3 class="mt-4 font-bold">I am a Patient / Family Member</h3><p class="mt-2 text-sm text-ink2">Access health information, share emergency details and stay informed.</p><button onclick="openAuth('Patient / Family')" class="btn mt-5 w-full rounded-full bg-teal1 text-white py-3 text-sm font-semibold">Continue as Patient →</button></div>
+   <div class="card reveal rounded-3xl border border-line bg-sgreen p-7"><div class="w-12 h-12 rounded-2xl bg-white grid place-items-center text-teal1"><i data-lucide="stethoscope"></i></div><h3 class="mt-4 font-bold">I am a Doctor</h3><p class="mt-2 text-sm text-ink2">Review incoming emergency cases, access relevant history and coordinate care.</p><button onclick="openAuth('Doctor')" class="btn mt-5 w-full rounded-full bg-teal1 text-white py-3 text-sm font-semibold">Login as Doctor →</button></div>
+   <div class="card reveal rounded-3xl border border-line bg-bg p-7"><div class="w-12 h-12 rounded-2xl bg-mint grid place-items-center text-teal1"><i data-lucide="hospital"></i></div><h3 class="mt-4 font-bold">I am a Hospital</h3><p class="mt-2 text-sm text-ink2">Manage beds, resources, doctors and incoming emergency cases.</p><button onclick="openAuth('Hospital')" class="btn mt-5 w-full rounded-full bg-teal1 text-white py-3 text-sm font-semibold">Hospital Login →</button></div>
+   <div class="card reveal rounded-3xl border border-line p-7" style="background:#FFF8F0"><div class="w-12 h-12 rounded-2xl bg-white grid place-items-center text-warn"><i data-lucide="shield"></i></div><h3 class="mt-4 font-bold">I am an Administrator</h3><p class="mt-2 text-sm text-ink2">Monitor system activity, healthcare coordination and platform-level information.</p><button onclick="openAuth('Administrator')" class="btn mt-5 w-full rounded-full bg-teal1 text-white py-3 text-sm font-semibold">Admin Login →</button></div>
+  </div>
+ </div>
+</section>
+
+<!-- SECURITY + IMPACT -->
+<section class="py-20">
+ <div class="max-w-7xl mx-auto px-4 sm:px-6">
+  <h2 class="text-3xl sm:text-4xl font-extrabold text-center reveal">Your Health Information Deserves Trust.</h2>
+  <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+   <div class="card reveal rounded-3xl bg-white border border-line p-7"><div class="text-teal1"><i data-lucide="key-round"></i></div><h3 class="mt-3 font-bold">Role-Based Access</h3><p class="mt-2 text-sm text-ink2">Information is displayed according to role and authorization.</p></div>
+   <div class="card reveal rounded-3xl bg-white border border-line p-7"><div class="text-teal1"><i data-lucide="lock"></i></div><h3 class="mt-3 font-bold">Secure Information Sharing</h3><p class="mt-2 text-sm text-ink2">Protect information during access and transmission.</p></div>
+   <div class="card reveal rounded-3xl bg-white border border-line p-7"><div class="text-teal1"><i data-lucide="scroll-text"></i></div><h3 class="mt-3 font-bold">Audit Trail</h3><p class="mt-2 text-sm text-ink2">Important access and system actions can be recorded for accountability.</p></div>
+   <div class="card reveal rounded-3xl bg-white border border-line p-7"><div class="text-teal1"><i data-lucide="eye-off"></i></div><h3 class="mt-3 font-bold">Privacy Focused</h3><p class="mt-2 text-sm text-ink2">Designed around controlled access to sensitive health information.</p></div>
+  </div>
+
+  <div class="mt-20 rounded-[32px] bg-teal1 text-white p-10 relative overflow-hidden">
+   <div class="absolute inset-0 grid-dots"></div>
+   <h2 class="relative text-2xl sm:text-3xl font-extrabold text-center">Building a More Connected Emergency Care Journey</h2>
+   <p class="relative text-center mt-2"><span class="text-[11px] font-bold uppercase tracking-wider bg-white/20 px-3 py-1 rounded-full">Demo Platform Metrics</span></p>
+   <div class="relative mt-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+    <div><p class="text-4xl font-extrabold"><span class="count" data-to="250">0</span>+</p><p class="text-sm text-mint mt-1">Connected Hospitals</p></div>
+    <div><p class="text-4xl font-extrabold"><span class="count" data-to="1200">0</span>+</p><p class="text-sm text-mint mt-1">Available Doctors</p></div>
+    <div><p class="text-4xl font-extrabold"><span class="count" data-to="8500">0</span>+</p><p class="text-sm text-mint mt-1">Emergency Cases</p></div>
+    <div><p class="text-4xl font-extrabold"><span class="count" data-to="3400">0</span>+</p><p class="text-sm text-mint mt-1">Available Beds</p></div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="py-20 bg-mint relative overflow-hidden">
+ <div class="absolute inset-0 grid-dots"></div>
+ <div class="relative max-w-4xl mx-auto px-6 text-center">
+  <h2 class="text-3xl sm:text-5xl font-extrabold leading-tight">Better Information.<br>Faster Coordination.<br><span class="text-teal1">Care That Starts Earlier.</span></h2>
+  <p class="mt-5 text-ink2 text-lg">JanSeva connects patients, hospitals and healthcare teams to prepare for emergency care before arrival.</p>
+  <p class="mt-4 font-hand text-2xl text-teal3">Ambulance brings the patient. JanSeva prepares the care.</p>
+  <div class="mt-8 flex flex-wrap justify-center gap-3">
+   <a href="#about" class="btn rounded-full bg-teal1 text-white px-7 py-3.5 font-semibold shadow-lg shadow-teal1/25">Explore JanSeva →</a>
+   <button onclick="openAuth()" class="btn rounded-full bg-white border border-line px-7 py-3.5 font-semibold">Login / Sign Up</button>
+  </div>
+ </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="contact" class="bg-white border-t border-line pt-14 pb-8">
+ <div class="max-w-7xl mx-auto px-4 sm:px-6 grid md:grid-cols-[1.2fr_2fr] gap-10">
+  <div><img src="/assets/01-janseva-logo.png" alt="JanSeva logo" class="h-14 w-auto"><p class="mt-3 text-sm text-ink2">People First. Health Always.</p></div>
+  <div class="grid grid-cols-2 sm:grid-cols-3 gap-6 text-sm">
+   <div class="grid gap-2 text-ink2"><a href="#home" class="hover:text-teal1">Home</a><a href="#about" class="hover:text-teal1">About</a><a href="#how" class="hover:text-teal1">How It Works</a><a href="#features" class="hover:text-teal1">Features</a></div>
+   <div class="grid gap-2 text-ink2"><a href="#patients" class="hover:text-teal1">For Patients</a><a href="#doctors" class="hover:text-teal1">For Doctors</a><a href="#hospitals" class="hover:text-teal1">For Hospitals</a></div>
+   <div class="grid gap-2 text-ink2"><a href="#" class="hover:text-teal1">Privacy</a><a href="#" class="hover:text-teal1">Terms</a><a href="#contact" class="hover:text-teal1">Contact</a></div>
+  </div>
+ </div>
+ <div class="max-w-7xl mx-auto px-4 sm:px-6 mt-10 pt-6 border-t border-line flex flex-wrap justify-between gap-2 text-xs text-ink2">
+  <p>© 2026 JanSeva</p><p>Care Today. Healthier Tomorrows. <span class="text-emerg">♥</span></p>
+ </div>
+</footer>
+</div><!-- /#mainSite -->
+
+<!-- DASHBOARD (injected after login) -->
+<div id="dashboard"></div>
+
+<!-- AUTH MODAL -->
+<div id="auth" class="hidden fixed inset-0 z-[60] auth-overlay p-4 overflow-y-auto" role="dialog" aria-modal="true" aria-label="Authentication">
+ <div class="auth-shell">
+  <div class="auth-left">
+   <div class="auth-logo-wrap"><img src="/assets/01-janseva-logo.png" alt="JanSeva" class="auth-logo"></div>
+   <div>
+    <p class="auth-quote">"Care starts with the right information."</p>
+    <ul class="auth-points">
+     <li>Secure &amp; Privacy Focused</li>
+     <li>Connected Healthcare</li>
+     <li>People First</li>
+    </ul>
+   </div>
+  </div>
+  <div class="auth-right">
+   <button onclick="closeAuth()" class="auth-close" aria-label="Close"><i data-lucide="x" style="width:16px;height:16px"></i></button>
+
+   <div id="stepRole" class="auth-step">
+    <h2>Welcome to JanSeva</h2><p class="sub">Choose your role to continue.</p>
+    <div class="role-grid">
+     <button class="role-card" onclick="selectRole('patient')"><div class="ic"><i data-lucide="users"></i></div><h3>Patient / Family</h3><p>Manage your health information and emergency details.</p></button>
+     <button class="role-card" onclick="selectRole('doctor')"><div class="ic"><i data-lucide="stethoscope"></i></div><h3>Doctor</h3><p>Manage incoming cases and coordinate patient care.</p></button>
+     <button class="role-card" onclick="selectRole('hospital')"><div class="ic"><i data-lucide="hospital"></i></div><h3>Hospital</h3><p>Manage emergency cases, beds, doctors and hospital readiness.</p></button>
+     <button class="role-card" onclick="selectRole('admin')"><div class="ic"><i data-lucide="shield"></i></div><h3>Administrator</h3><p>Manage the JanSeva healthcare network.</p></button>
+    </div>
+   </div>
+
+   <div id="stepChoice" class="auth-step hidden">
+    <button class="back-link" onclick="goStep('stepRole')">← Change Role</button>
+    <h2><span id="choiceRoleLabel"></span></h2>
+    <div class="tab-switch">
+     <button id="tabLogin" class="active" onclick="showAuthMode('login')">Login</button>
+     <button id="tabRegister" onclick="showAuthMode('register')">Create Account</button>
+    </div>
+    <div id="modeArea" class="mt-5"></div>
+   </div>
+
+   <div id="stepSuccess" class="auth-step hidden"></div>
+  </div>
+ </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.460.0/lucide.min.js" onerror="window.__nolucide=1"></script>
+<script src="/js/dashboard/dashboard.js" defer></script>
+</body>
+</html>
