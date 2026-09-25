@@ -221,7 +221,21 @@ function renderLogin(role){
 function submitLogin(e){
   e.preventDefault();
   if(!validateForm(e.target)) return false;
-  goToDashboard(currentRole, {});
+  const credentials = Object.fromEntries(new FormData(e.target).entries());
+  fetch('/janseva/patient-auth/login', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    credentials:'same-origin',
+    body:JSON.stringify({
+      email:credentials.email,
+      mobile:credentials.mobile,
+      password:credentials.password
+    })
+  }).then(async response=>{
+    const data = await response.json();
+    if(!response.ok) throw new Error(data.message || 'Login failed.');
+    goToDashboard(currentRole, data.user?.fullName);
+  }).catch(error=>notify(e, error.message));
   return false;
 }
 
@@ -315,12 +329,39 @@ function saveCurrentStepDraft(){
   const target = ['personal','emergency','medical','security'][regStep-1];
   Object.assign(PatientDraft[target], data);
 }
-function patientSubmit(e, step){
+async function patientSubmit(e, step){
   e.preventDefault();
   if(!validateForm(e.target)) return false;
   saveCurrentStepDraft();
   if(step<4){ patientNav(step+1); return false; }
-  showSuccess('patient', PatientDraft.personal.fullName || 'Rahul');
+  const draft = PatientDraft;
+  const response = await fetch('/janseva/patient-auth/register-patient', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    credentials:'same-origin',
+    body:JSON.stringify({
+      fullName:draft.personal.fullName,
+      gender:draft.personal.gender,
+      dateOfBirth:draft.personal.dob,
+      mobNo:draft.personal.mobile,
+      email:draft.personal.email,
+      password:draft.security.password,
+      address:{
+        city:draft.personal.city,
+        state:draft.personal.state,
+        pincode:draft.personal.pin
+      },
+      emergencyContact:{
+        fullName:draft.emergency.ecName,
+        mobNo:draft.emergency.ecNumber,
+        relationship:draft.emergency.ecRelation
+      },
+      bloodGroup:draft.emergency.bloodGroup
+    })
+  });
+  const data = await response.json();
+  if(!response.ok){ notify(e, data.message || 'Registration failed.'); return false; }
+  showSuccess('patient', draft.personal.fullName);
   return false;
 }
 

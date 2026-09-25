@@ -1,11 +1,12 @@
 const express = require("express")
 const cookieParser = require("cookie-parser")
-const buyerAuthRouter = require("./routes/buyerAuth.routes")
+const patientAuthRouter = require("./routes/patientAuth.routes");
 const path = require("path");
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
-app.use("/biharikisan/auth/buyer",buyerAuthRouter)
+app.use(cookieParser());
+app.use("/janseva/patient-auth",patientAuthRouter);
 
 //viewa
 app.set("view engine","ejs");
@@ -17,7 +18,6 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req,res)=>{
     res.render("dashboard/dashboard")
-
 
 })
 
