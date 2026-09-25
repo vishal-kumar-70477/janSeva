@@ -1,4 +1,4 @@
-const patientModel = require("../public/patient.model");
+const patientModel = require("../models/patient.model");
 const jwt = require("jsonwebtoken");
 const argon2 = require("argon2");
 const config = require("../config/config");
