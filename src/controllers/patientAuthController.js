@@ -1,6 +1,6 @@
 const patientModel = require("../models/patient.model");
 const jwt = require("jsonwebtoken");
-const argon2 = require("argon2");
+const bcrypt = require("bcryptjs");
 const config = require("../config/config");
 const counterModel = require("../models/counter.model");
 const registaryModel = require("../models/centralRegistry.model");
@@ -21,7 +21,7 @@ async function login(req, res){
     }
     
 
-    const isPasswordValid= await argon2.verify(user.password, password)
+    const isPasswordValid= await bcrypt.compare(password, user.password)
 
     if(!isPasswordValid){
         return res.status(401).json({
@@ -56,9 +56,51 @@ async function login(req, res){
 
 }
 
+async function renderPatientDashboard(req, res){
+    const {refreshToken} = req.cookies;
+
+    if(!refreshToken){
+        return res.redirect("/");
+    }
+
+    try{
+        const payload = jwt.verify(refreshToken, config.JWT_SECRET_KEY);
+        const patient = await patientModel.findById(payload.id).lean();
+
+        if(!patient || patient.role !== "patient"){
+            return res.redirect("/");
+        }
+
+        const birthDate = new Date(patient.dateOfBirth);
+        const today = new Date();
+        const age = today.getFullYear() - birthDate.getFullYear() -
+            ((today.getMonth() < birthDate.getMonth() ||
+              (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate())) ? 1 : 0);
+        const profileFields = [
+            patient.fullName,
+            patient.dateOfBirth,
+            patient.mobNo,
+            patient.email,
+            patient.address?.city,
+            patient.address?.state,
+            patient.emergencyContact?.fullName,
+            patient.emergencyContact?.mobNo,
+            patient.bloodGroup,
+            patient.medicalHistory,
+            patient.medications
+        ];
+        const profileCompletion = Math.round(profileFields.filter(Boolean).length / profileFields.length * 100);
+
+        return res.render("patient/patientDash", {patient, age, profileCompletion});
+    }catch(error){
+        res.clearCookie("refreshToken");
+        return res.redirect("/");
+    }
+}
+
 // register patient
 async function registerPatient(req,res){
-    const {fullName,gender,dateOfBirth,mobNo,email,password,address,emergencyContact,bloodGroup,allergies} = req.body;
+    const {fullName,gender,dateOfBirth,mobNo,email,password,address,emergencyContact,bloodGroup,allergies,medicalHistory,medications,additionalInfo} = req.body;
 
     if(!fullName || !gender || !dateOfBirth || !mobNo || !email || !password || !address || !emergencyContact){
         return res.status(400).json({
@@ -76,9 +118,7 @@ async function registerPatient(req,res){
         })
     }
 
-    const hashPassword = await argon2.hash(password,{
-        type:argon2.argon2id
-    });
+    const hashPassword = await bcrypt.hash(password, 12);
     
     const patient = await patientModel.create({
         fullName,
@@ -90,7 +130,10 @@ async function registerPatient(req,res){
         address,
         emergencyContact,
         bloodGroup,
-        allergies
+        allergies,
+        medicalHistory,
+        medications,
+        additionalInfo
     });
 
     // access token 
@@ -122,7 +165,7 @@ async function registerPatient(req,res){
 
     res.cookie("refreshToken",refreshToken,{
         httpOnly:true,
-        secure:true,
+        secure:process.env.NODE_ENV === "production",
         sameSite:true,
         maxAge:7*24*60*60*1000
     });
@@ -168,4 +211,4 @@ async function otpVerification(req,res){
 
 
 
-module.exports = {registerPatient, login};
+module.exports = {registerPatient, login, renderPatientDashboard};

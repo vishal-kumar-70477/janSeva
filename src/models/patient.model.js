@@ -15,7 +15,7 @@ const patientSchema = new mongoose.Schema({
     gender:{
         type:String,
         required:[true,"gender is required"],
-        enum:["Male","Female"]
+        enum:["Male","Female","Other","Prefer not to say"]
     },
     dateOfBirth:{
         type:Date,
@@ -64,12 +64,24 @@ const patientSchema = new mongoose.Schema({
     },
     bloodGroup:{
         type:String,
-        enum:["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-","Not known"],
+        enum:["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "None", "Not known"],
         default:"Not known"
     },
     allergies:{
         type:String,
         default:"Not known"
+    },
+    medicalHistory:{
+        type:String,
+        default:"Not added"
+    },
+    medications:{
+        type:String,
+        default:"Not added"
+    },
+    additionalInfo:{
+        type:String,
+        default:"Not added"
     },
     role:{
         type:String,

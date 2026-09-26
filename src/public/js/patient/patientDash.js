@@ -3,7 +3,8 @@ icons();
 setTimeout(()=>document.querySelectorAll('.reveal').forEach(e=>e.classList.add('in')),1200);
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-setTimeout(()=>{document.getElementById('ring').style.transition='stroke-dashoffset 1.2s ease';document.getElementById('ring').style.strokeDashoffset=188.5*(1-0.82);},400);
+document.querySelectorAll('.profile-completion-bar').forEach(bar=>{bar.style.width=`${Number(bar.dataset.completion||0)}%`;});
+setTimeout(()=>{const ring=document.getElementById('ring');const completion=Number(ring.dataset.completion||0);ring.style.transition='stroke-dashoffset 1.2s ease';ring.style.strokeDashoffset=188.5*(1-completion/100);},400);
 
 const symptoms=['Chest pain','Breathing difficulty','Severe bleeding','Loss of consciousness','Severe pain','Accident / Injury'];
 document.querySelector('#emgModal .grid.grid-cols-2').innerHTML=symptoms.map(s=>`<label class="flex items-center gap-2 border border-line rounded-lg px-3 py-2"><input type="checkbox">${s}</label>`).join('')+`

@@ -1,5 +1,5 @@
 /* ============================================================
-   JanSeva — page interactions + authentication + dashboards
+  JanSeva — page interactions + authentication
    Demo-only. No data is submitted or stored anywhere real.
    ============================================================ */
 
@@ -75,9 +75,9 @@ const RoleConfig = {
   }
 };
 
-let currentRole = null;   // 'patient' | 'doctor' | 'hospital' | 'admin'
+let currentRole = null;    // 'patient' | 'doctor' | 'hospital' | 'admin'
 let currentMode = 'login'; // 'login' | 'register'
-let regStep = 1;           // patient wizard step
+let regStep = 1;           // patient wizard step (1..3)
 const PatientDraft = { personal:{}, emergency:{}, medical:{}, security:{} };
 
 /* ============================================================
@@ -234,7 +234,7 @@ function submitLogin(e){
   }).then(async response=>{
     const data = await response.json();
     if(!response.ok) throw new Error(data.message || 'Login failed.');
-    goToDashboard(currentRole, data.user?.fullName);
+    window.location.href = '/janseva/patient-auth/login';
   }).catch(error=>notify(e, error.message));
   return false;
 }
@@ -261,107 +261,162 @@ function renderRegister(role){
   return '';
 }
 
-/* ---------- Patient: 4-step wizard ---------- */
-const PatientSteps = ['Personal Information','Emergency Information','Medical Information','Account Security'];
-function progressBar(step,total){
-  let segs=''; for(let i=1;i<=total;i++) segs+=`<div class="seg ${i<step?'done':i===step?'current':''}"></div>`;
+/* ============================================================
+   PATIENT REGISTRATION — 3-STEP WIZARD
+   (Personal → Emergency & Medical → Account Security)
+   ============================================================ */
+const PatientSteps = ['Personal Information','Emergency & Medical Information','Account Security'];
+
+function progressBar(step, total){
+  let segs='';
+  for(let i=1;i<=total;i++){
+    segs += `<div class="seg ${i<step?'done':i===step?'current':''}"></div>`;
+  }
   return `<div class="progress">${segs}</div><p class="progress-label">Step ${step} of ${total} — ${PatientSteps[step-1]}</p>`;
 }
+
 function renderPatientStep(step){
   regStep = step;
-  const nav = (isLast)=> `
-   <div class="flex gap-3 mt-6">
-    ${step>1?`<button type="button" class="btn flex-1 rounded-full border border-line py-3 font-semibold" onclick="patientNav(${step-1})">Back</button>`:''}
-    <button type="submit" class="btn flex-1 rounded-full bg-teal1 text-white py-3 font-semibold">${isLast?'Create Account →':'Continue'}</button>
-   </div>`;
 
-  let body='';
+  const nav = (isLast) => `
+    <div class="flex gap-3 mt-6">
+      ${step>1 ? `<button type="button" class="btn flex-1 rounded-full border border-line py-3 font-semibold" onclick="patientNav(${step-1})">Back</button>` : ''}
+      <button type="submit" class="btn flex-1 rounded-full bg-teal1 text-white py-3 font-semibold">${isLast ? 'Create Account →' : 'Continue'}</button>
+    </div>`;
+
+  let body = '';
+
+  /* ---------- STEP 1 — Personal Information ---------- */
   if(step===1){
     body = grid([
-      {name:'fullName',label:'Full Name',type:'text',placeholder:'e.g. Rahul Sharma',validate:'required'},
-      {name:'dob',label:'Date of Birth',type:'date',validate:'dob'},
-      {name:'gender',label:'Gender',type:'select',options:['Male','Female','Other','Prefer not to say'],validate:'required'},
-      {name:'mobile',label:'Mobile Number',type:'tel',placeholder:'10-digit mobile number',validate:'mobile'},
-      {name:'email',label:'Email Address',type:'email',placeholder:'you@example.com',validate:'email'},
-      {name:'address',label:'Address',type:'text',placeholder:'House / street',validate:'required'},
-      {name:'city',label:'City',type:'text',placeholder:'City',validate:'required'},
-      {name:'state',label:'State',type:'text',placeholder:'State',validate:'required'},
-      {name:'pin',label:'PIN Code',type:'text',placeholder:'6-digit PIN',validate:'required'},
+      {name:'fullName', label:'Full Name', type:'text', placeholder:'e.g. Rahul Sharma', validate:'required'},
+      {name:'dob', label:'Date of Birth', type:'date', validate:'dob'},
+      {name:'gender', label:'Gender', type:'select', options:['Male','Female','Other','Prefer not to say'], validate:'required'},
+      {name:'mobile', label:'Mobile Number', type:'tel', placeholder:'10-digit mobile number', validate:'mobile'},
+      {name:'email', label:'Email Address', type:'email', placeholder:'you@example.com', validate:'email'},
+      {name:'address', label:'Address', type:'text', placeholder:'House / street', validate:'required'},
+      {name:'city', label:'City', type:'text', placeholder:'City', validate:'required'},
+      {name:'state', label:'State', type:'text', placeholder:'State', validate:'required'},
+      {name:'pin', label:'PIN Code', type:'text', placeholder:'6-digit PIN', validate:'required'},
     ]);
-  } else if(step===2){
-    body = grid([
-      {name:'bloodGroup',label:'Blood Group',type:'select',options:['A+','A-','B+','B-','AB+','AB-','O+','O-'],validate:'required'},
-      {name:'ecName',label:'Emergency Contact Name',type:'text',placeholder:'Full name',validate:'required'},
-      {name:'ecNumber',label:'Emergency Contact Number',type:'tel',placeholder:'10-digit mobile number',validate:'mobile'},
-      {name:'ecRelation',label:'Relationship',type:'select',options:['Father','Mother','Brother','Sister','Spouse','Guardian','Other'],validate:'required'},
-    ]);
-  }  else if(step===4){
-    body = grid([
-      {name:'password',label:'Create Password',type:'password',placeholder:'At least 8 characters',validate:'password'},
-      {name:'confirmPassword',label:'Confirm Password',type:'password',placeholder:'Re-enter password',validate:'confirm',matches:'password'},
-    ], false) + `
-    <label class="chip-check mt-4"><input type="checkbox" name="terms" data-validate="required"> I agree to the JanSeva Terms &amp; Privacy Policy.</label>
-    <div class="field error hidden" id="termsErrWrap"><span class="err"></span></div>
-    <div class="privacy-note">Your health information is sensitive. JanSeva uses role-based access so relevant information can be accessed only by authorized users according to the system's permissions.</div>`;
+  }
+
+  /* ---------- STEP 2 — Emergency + Medical Information ---------- */
+  else if(step===2){
+    body = `
+      <div class="section-title">Emergency Information</div>
+      ${grid([
+        {name:'bloodGroup', label:'Blood Group', type:'select', options:['A+','A-','B+','B-','AB+','AB-','O+','O-','None'], validate:'required'},
+        {name:'ecName', label:'Emergency Contact Name', type:'text', placeholder:'Full name', validate:'required'},
+        {name:'ecNumber', label:'Emergency Contact Number', type:'tel', placeholder:'10-digit mobile number', validate:'mobile'},
+        {name:'ecRelation', label:'Relationship', type:'select', options:['Father','Mother','Brother','Sister','Spouse','Guardian','Other'], validate:'required'},
+      ])}
+      <div class="section-title">Medical Information</div>
+      <p class="text-sm text-ink2 -mt-2 mb-3">Only baseline information is collected here — you don't need to list every medical detail.</p>
+      ${grid([
+        {name:'allergies', label:'Known Allergies', type:'text', placeholder:'e.g. Penicillin (or "None")', optional:true},
+        {name:'medicalHistory', label:'Existing Medical Conditions', type:'text', placeholder:'e.g. Hypertension (or "None")', optional:true},
+        {name:'medications', label:'Current Medications', type:'text', placeholder:'e.g. Amlodipine 5mg (or "None")', optional:true},
+        {name:'additionalInfo', label:'Previous Surgeries / Other Notes', type:'text', placeholder:'Optional', optional:true},
+      ], false)}
+    `;
+  }
+
+  /* ---------- STEP 3 — Account Security ---------- */
+  else if(step===3){
+    body = `
+      ${grid([
+        {name:'password', label:'Create Password', type:'password', placeholder:'At least 8 characters', validate:'password'},
+        {name:'confirmPassword', label:'Confirm Password', type:'password', placeholder:'Re-enter password', validate:'confirm', matches:'password'},
+      ], false)}
+      <label class="chip-check mt-4">
+        <input type="checkbox" name="terms" data-validate="required">
+        I agree to the JanSeva Terms &amp; Privacy Policy.
+      </label>
+      <div class="privacy-note">
+        Your health information is sensitive. JanSeva uses role-based access so relevant information
+        can be accessed only by authorized users according to the system's permissions.
+      </div>
+    `;
   }
 
   return `
-   <button class="back-link" onclick="event.preventDefault();showAuthMode('login')">← Back to Login</button>
-   <h2>Create Your JanSeva Account</h2>
-   <p class="sub">Create your profile so your relevant health information can be available when it matters.</p>
-   ${progressBar(step,4)}
-   <form id="patientForm" class="mt-5" onsubmit="return patientSubmit(event, ${step})">
-     <div class="section-title">${PatientSteps[step-1]}</div>
-     ${body}
-     ${nav(step===4)}
-   </form>
-   <p class="demo-note">Demo interface — no real medical information is stored.</p>`;
+    <button class="back-link" onclick="event.preventDefault();showAuthMode('login')">← Back to Login</button>
+    <h2>Create Your JanSeva Account</h2>
+    <p class="sub">Create your profile so your relevant health information can be available when it matters.</p>
+    ${progressBar(step, 3)}
+    <form id="patientForm" class="mt-5" onsubmit="return patientSubmit(event, ${step})">
+      <div class="section-title">${PatientSteps[step-1]}</div>
+      ${body}
+      ${nav(step===3)}
+    </form>
+    <p class="demo-note">Demo interface — no real medical information is stored.</p>
+  `;
 }
+
 function patientNav(step){
   saveCurrentStepDraft();
   document.getElementById('modeArea').innerHTML = renderPatientStep(step);
   icons(); wireForm();
 }
+
+/* Saves the current step's form fields into PatientDraft.
+   Step 2 covers BOTH emergency and medical fields visually,
+   so its data is merged into both draft buckets. */
 function saveCurrentStepDraft(){
   const form = document.getElementById('patientForm');
   if(!form) return;
   const data = Object.fromEntries(new FormData(form).entries());
-  const target = ['personal','emergency','medical','security'][regStep-1];
-  Object.assign(PatientDraft[target], data);
+  if(regStep===1){ Object.assign(PatientDraft.personal, data); }
+  else if(regStep===2){ Object.assign(PatientDraft.emergency, data); Object.assign(PatientDraft.medical, data); }
+  else if(regStep===3){ Object.assign(PatientDraft.security, data); }
 }
+
 async function patientSubmit(e, step){
   e.preventDefault();
   if(!validateForm(e.target)) return false;
   saveCurrentStepDraft();
-  if(step<4){ patientNav(step+1); return false; }
+
+  if(step<3){ patientNav(step+1); return false; }
+
+  /* Step 3 complete — create account */
   const draft = PatientDraft;
-  const response = await fetch('/janseva/patient-auth/register-patient', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    credentials:'same-origin',
-    body:JSON.stringify({
-      fullName:draft.personal.fullName,
-      gender:draft.personal.gender,
-      dateOfBirth:draft.personal.dob,
-      mobNo:draft.personal.mobile,
-      email:draft.personal.email,
-      password:draft.security.password,
-      address:{
-        city:draft.personal.city,
-        state:draft.personal.state,
-        pincode:draft.personal.pin
-      },
-      emergencyContact:{
-        fullName:draft.emergency.ecName,
-        mobNo:draft.emergency.ecNumber,
-        relationship:draft.emergency.ecRelation
-      },
-      bloodGroup:draft.emergency.bloodGroup
-    })
-  });
-  const data = await response.json();
-  if(!response.ok){ notify(e, data.message || 'Registration failed.'); return false; }
-  showSuccess('patient', draft.personal.fullName);
+  try{
+    const response = await fetch('/janseva/patient-auth/register-patient', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      credentials:'same-origin',
+      body:JSON.stringify({
+        fullName: draft.personal.fullName,
+        gender: draft.personal.gender,
+        dateOfBirth: draft.personal.dob,
+        mobNo: draft.personal.mobile,
+        email: draft.personal.email,
+        password: draft.security.password,
+        address: {
+          line1: draft.personal.address,
+          city: draft.personal.city,
+          state: draft.personal.state,
+          pincode: draft.personal.pin
+        },
+        emergencyContact: {
+          fullName: draft.emergency.ecName,
+          mobNo: draft.emergency.ecNumber,
+          relationship: draft.emergency.ecRelation
+        },
+        bloodGroup: draft.emergency.bloodGroup,
+        medicalHistory: draft.medical.medicalHistory || '',
+        allergies: draft.medical.allergies || '',
+        medications: draft.medical.medications || '',
+        additionalInfo: draft.medical.additionalInfo || ''
+      })
+    });
+    const data = await response.json();
+    if(!response.ok){ notify(e, data.message || 'Registration failed.'); return false; }
+    window.location.href = '/janseva/patient-auth/login';
+  }catch(err){
+    notify(e, 'Could not reach the server. Please try again.');
+  }
   return false;
 }
 
@@ -495,146 +550,15 @@ function showSuccess(role, name){
      <h2>Account Created Successfully</h2>
      <p class="text-ink2 mt-2 text-sm">${role==='patient' ? 'Complete your health profile to make your relevant information available when it matters.' : 'Your submission is being reviewed by the JanSeva team.'}</p>
      ${statusHtml ? `<div class="mt-3">${statusHtml}</div>` : ''}
-     <button class="btn mt-6 rounded-full bg-teal1 text-white px-7 py-3 font-semibold" onclick="goToDashboard('${role}','${(name||'').replace(/'/g,"")}')">
-       ${role==='patient' ? 'Complete Health Profile →' : 'Go to Dashboard →'}
+     <button class="btn mt-6 rounded-full bg-teal1 text-white px-7 py-3 font-semibold" onclick="window.location.href='/janseva/patient-auth/login'">
+       Go to Login →
      </button>
    </div>`;
   goStep('stepSuccess');
   icons();
 }
 
-/* ============================================================
-   DASHBOARD ROUTING
-   ============================================================ */
-function goToDashboard(role, name){
-  closeAuth();
-  document.getElementById('mainSite').classList.add('hidden');
-  const dash = document.getElementById('dashboard');
-  dash.classList.add('show');
-  dash.innerHTML = Dashboards[role](name);
-  window.scrollTo(0,0);
-  icons();
-}
-function exitDashboard(){
-  document.getElementById('dashboard').classList.remove('show');
-  document.getElementById('dashboard').innerHTML='';
-  document.getElementById('mainSite').classList.remove('hidden');
-  window.scrollTo(0,0);
-}
 function notify(e, msg){ e.preventDefault(); const b=document.createElement('div'); b.textContent=msg; b.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#263B3A;color:#fff;padding:.7rem 1.1rem;border-radius:999px;font-size:.82rem;z-index:999;box-shadow:0 10px 25px -10px rgba(0,0,0,.4)'; document.body.appendChild(b); setTimeout(()=>b.remove(),2200); return false; }
-
-const dashShell = (title, roleLabel, body) => `
- <div class="dash-top">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 h-[72px] flex items-center justify-between">
-   <div class="flex items-center gap-3">
-    <img src="/assets/01-janseva-logo.png" alt="JanSeva" class="h-9 w-auto">
-    <span class="hidden sm:inline text-xs font-bold uppercase tracking-wide text-ink2 border-l border-line pl-3">${roleLabel} Dashboard</span>
-   </div>
-   <button onclick="exitDashboard()" class="btn text-sm font-semibold rounded-full border border-line px-4 py-2">← Exit Demo / Log out</button>
-  </div>
- </div>
- <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10">${body}</div>`;
-
-const Dashboards = {
-  patient: (name)=> dashShell('Patient', 'Patient', `
-   <div class="flex flex-wrap items-center justify-between gap-4">
-    <div><h1 class="text-2xl font-extrabold">Welcome, ${name || 'Rahul'}</h1><p class="text-ink2 text-sm mt-1">Your health information, ready when it matters. <span class="text-[10px] font-bold uppercase bg-mint text-teal3 px-2 py-1 rounded-full ml-1">Demo Data</span></p></div>
-    <button class="emg-btn btn flex items-center gap-2" onclick="openEmergencyFlow()"><i data-lucide="siren" style="width:18px;height:18px"></i>Emergency Assistance</button>
-   </div>
-   <div class="mt-8 grid md:grid-cols-3 gap-5">
-    <div class="dash-card"><p class="text-xs font-bold text-teal1 uppercase">Health Profile</p><p class="mt-2 font-bold">52 yrs · O+ Blood Group</p><p class="text-sm text-ink2 mt-1">Mumbai, Maharashtra</p></div>
-    <div class="dash-card"><p class="text-xs font-bold text-teal1 uppercase">Emergency Status</p><p class="mt-2 font-bold text-ok">No active emergency</p><p class="text-sm text-ink2 mt-1">Last case: none on record</p></div>
-    <div class="dash-card"><p class="text-xs font-bold text-teal1 uppercase">Emergency Contacts</p><p class="mt-2 font-bold">Meena Sharma (Spouse)</p><p class="text-sm text-ink2 mt-1">+91 9XXXXXXXXX</p></div>
-   </div>
-   <div class="mt-6 grid md:grid-cols-2 gap-5">
-    <div class="dash-card"><p class="text-xs font-bold text-teal1 uppercase">Medical History &amp; Current Medications</p>
-     <ul class="mt-3 text-sm space-y-1"><li>• Hypertension (2022)</li><li>• Previous cardiac consultation (2024)</li><li class="mt-2 text-ink2 font-semibold">Current medication</li><li>• Amlodipine 5mg</li></ul></div>
-    <div class="dash-card"><p class="text-xs font-bold text-teal1 uppercase">Allergies &amp; Documents</p>
-     <ul class="mt-3 text-sm space-y-1"><li>• Penicillin</li></ul>
-     <p class="mt-3 text-ink2 text-xs font-semibold">Documents</p>
-     <p class="text-sm mt-1 flex items-center gap-2"><i data-lucide="file-text" style="width:15px;height:15px" class="text-teal1"></i>Discharge_Summary_2024.pdf</p></div>
-   </div>
-   <div id="emgFlow" class="mt-6"></div>
-  `),
-  doctor: (name)=> dashShell('Doctor', 'Doctor', `
-   <div class="flex flex-wrap items-center justify-between gap-4">
-    <div><h1 class="text-2xl font-extrabold">Welcome, Dr. ${name || 'Aditya'}</h1><p class="text-ink2 text-sm mt-1">Review incoming cases and coordinate care.</p></div>
-    <span class="status-pill status-pending"><i data-lucide="clock" style="width:13px;height:13px"></i>Verification Pending</span>
-   </div>
-   <div class="mt-8 dash-card max-w-xl">
-    <p class="font-bold text-teal3 text-sm">INCOMING PATIENT <span class="text-[10px] font-bold uppercase bg-mint text-teal3 px-2 py-1 rounded-full ml-1">Demo Data</span></p>
-    <dl class="mt-4 space-y-2.5 text-sm">
-     <div class="flex justify-between border-b border-line pb-2"><dt class="text-ink2">Patient</dt><dd class="font-semibold">Rahul Sharma</dd></div>
-     <div class="flex justify-between border-b border-line pb-2"><dt class="text-ink2">Current Condition</dt><dd class="font-semibold">Severe Chest Pain</dd></div>
-     <div class="flex justify-between border-b border-line pb-2"><dt class="text-ink2">Medical History</dt><dd class="font-semibold text-ok">Available ✓</dd></div>
-     <div class="flex justify-between border-b border-line pb-2"><dt class="text-ink2">Hospital</dt><dd class="font-semibold text-ok">Ready ✓</dd></div>
-     <div class="flex justify-between"><dt class="text-ink2">Specialist</dt><dd class="font-semibold text-teal1">Request Available</dd></div>
-    </dl>
-    <div class="mt-5 flex flex-wrap gap-3">
-     <button class="btn rounded-full bg-teal1 text-white px-5 py-2.5 text-sm font-semibold">View Patient Summary</button>
-     <button class="btn rounded-full border border-teal1 text-teal1 px-5 py-2.5 text-sm font-semibold">Request Specialist</button>
-    </div>
-   </div>
-  `),
-  hospital: (name)=> dashShell('Hospital', 'Hospital', `
-   <h1 class="text-2xl font-extrabold">Welcome, ${name || 'City Care Hospital'}</h1>
-   <p class="text-ink2 text-sm mt-1">Manage beds, doctors and incoming emergency cases. <span class="status-pill status-pending ml-1"><i data-lucide="clock" style="width:13px;height:13px"></i>Verification Pending</span></p>
-   <div class="mt-8 grid md:grid-cols-3 gap-5">
-    <div class="dash-card"><p class="font-bold">Bed Availability</p><p class="mt-3 text-sm flex justify-between"><span class="text-ink2">Emergency Bed</span><span class="font-semibold text-ok">Available ✓</span></p><p class="mt-2 text-sm flex justify-between"><span class="text-ink2">ICU Bed</span><span class="font-semibold text-ok">Available ✓</span></p></div>
-    <div class="dash-card"><p class="font-bold">Doctor Availability</p><p class="mt-3 text-sm flex justify-between"><span class="text-ink2">General Physician</span><span class="font-semibold text-ok">Available ✓</span></p><p class="mt-2 text-sm flex justify-between"><span class="text-ink2">Specialist</span><span class="font-semibold text-teal1">On Request</span></p></div>
-    <div class="dash-card"><p class="font-bold">Incoming Case</p><p class="mt-3 text-sm flex justify-between"><span class="text-ink2">Patient ETA</span><span class="font-semibold">08 minutes</span></p><p class="mt-2 text-sm flex justify-between"><span class="text-ink2">Status</span><span class="font-bold text-ok">READY ✓</span></p></div>
-   </div>
-  `),
-  admin: (name)=> dashShell('Admin', 'Administrator', `
-   <h1 class="text-2xl font-extrabold">Welcome, Administrator</h1>
-   <p class="text-ink2 text-sm mt-1">Monitor system activity and platform-level information. <span class="text-[10px] font-bold uppercase bg-mint text-teal3 px-2 py-1 rounded-full ml-1">Demo Data</span></p>
-   <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-5">
-    <div class="dash-card text-center"><p class="text-3xl font-extrabold text-teal1">250+</p><p class="text-sm text-ink2 mt-1">Connected Hospitals</p></div>
-    <div class="dash-card text-center"><p class="text-3xl font-extrabold text-teal1">1,200+</p><p class="text-sm text-ink2 mt-1">Available Doctors</p></div>
-    <div class="dash-card text-center"><p class="text-3xl font-extrabold text-teal1">8,500+</p><p class="text-sm text-ink2 mt-1">Emergency Cases</p></div>
-    <div class="dash-card text-center"><p class="text-3xl font-extrabold text-teal1">3,400+</p><p class="text-sm text-ink2 mt-1">Available Beds</p></div>
-   </div>
-  `),
-};
-
-/* ============================================================
-   STEP 16 — Emergency flow for an existing (logged-in) patient
-   Only asks for CURRENT information; baseline profile is reused.
-   ============================================================ */
-function openEmergencyFlow(){
-  const box = document.getElementById('emgFlow');
-  box.innerHTML = `
-   <div class="dash-card border-emerg/40" style="border-color:#f3b3b1">
-    <p class="font-bold text-emergD flex items-center gap-2"><i data-lucide="siren" style="width:16px;height:16px"></i>Report Emergency</p>
-    <p class="text-sm text-ink2 mt-1">Your baseline profile (history, allergies, medications) is already on file — we only need to know what's happening right now.</p>
-    <form class="mt-5" onsubmit="return submitEmergency(event)">
-     <div class="form-grid two">
-      ${field({name:'whatHappened',label:'What happened?',type:'text',placeholder:'e.g. Sudden chest pain',validate:'required'})}
-      ${field({name:'startedWhen',label:'When did it start?',type:'text',placeholder:'e.g. 10 minutes ago',validate:'required'})}
-      ${field({name:'symptoms',label:'Current symptoms',type:'text',placeholder:'e.g. Breathlessness, sweating',validate:'required'})}
-      ${field({name:'condition',label:'Current condition',type:'select',options:['Stable','Moderate','Severe','Critical'],validate:'required'})}
-      ${field({name:'newMed',label:'Any new medication?',type:'text',placeholder:'Optional',optional:true})}
-      ${field({name:'injury',label:'Any recent injury?',type:'text',placeholder:'Optional',optional:true})}
-     </div>
-     <div class="mt-3">${field({name:'photo',label:'Upload current medical document / photo',type:'file',optional:true})}</div>
-     <button class="emg-btn btn mt-5 w-full">Submit Emergency Case →</button>
-    </form>
-   </div>`;
-  box.scrollIntoView({behavior:'smooth', block:'center'});
-  icons(); wireForm();
-}
-function submitEmergency(e){
-  e.preventDefault();
-  if(!validateForm(e.target)) return false;
-  document.getElementById('emgFlow').innerHTML = `
-   <div class="dash-card text-center">
-    <div class="tick" style="margin:0 auto"><i data-lucide="check"></i></div>
-    <h3 class="font-bold text-lg mt-3">Emergency Case Created</h3>
-    <p class="text-ink2 text-sm mt-2">Your existing history has been attached automatically. The nearest ready hospital and an available doctor are being notified. <span class="font-semibold text-teal1">(Demo simulation)</span></p>
-   </div>`;
-  icons();
-  return false;
-}
 
 /* ============================================================
    MODAL: close on backdrop click / Escape

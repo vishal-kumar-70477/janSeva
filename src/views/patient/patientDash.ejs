@@ -6,8 +6,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config={theme:{extend:{colors:{t1:'#008F83',t2:'#006F68',t3:'#16A394',bg:'#EEF7F5',sec:'#E5F2EF',soft:'#F3F9F7',card:'#F9FCFB',ink:'#263B3A',ink2:'#667573',line:'#D4E6E2',emerg:'#EF5350',ok:'#20A56B',warn:'#F4A340'},fontFamily:{sans:['Plus Jakarta Sans','sans-serif']}}}}</script>
-<link rel="stylesheet" href="dashboard.css"></head>
+<link rel="stylesheet" href="/css/patient/patientDash.css"></head>
 <body>
+<% const firstName = patient.fullName.split(/\s+/)[0];
+    const initials = patient.fullName.split(/\s+/).map(name => name[0]).join('').slice(0, 2).toUpperCase();
+    const location = [patient.address?.city, patient.address?.state].filter(Boolean).join(', ') || 'Location not added';
+    const emergencyInitials = patient.emergencyContact?.fullName ? patient.emergencyContact.fullName.split(/\s+/).map(name => name[0]).join('').slice(0, 2).toUpperCase() : '--';
+%>
 
 <div class="flex min-h-screen">
 <!-- SIDEBAR -->
@@ -45,8 +50,8 @@
    <button class="relative p-2 rounded-full hover:bg-soft"><i data-lucide="bell"></i><span class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-emerg text-white text-[10px] rounded-full grid place-items-center">3</span></button>
    <div class="relative">
     <button onclick="document.getElementById('pmenu').classList.toggle('hidden')" class="flex items-center gap-2">
-     <div class="w-9 h-9 rounded-full bg-t1 text-white grid place-items-center font-bold text-sm">RS</div>
-     <span class="hidden sm:block text-left"><p class="text-sm font-bold leading-none">Rahul Sharma</p><p class="text-[11px] text-ink2">Patient</p></span>
+    <div class="w-9 h-9 rounded-full bg-t1 text-white grid place-items-center font-bold text-sm"><%= initials %></div>
+    <span class="hidden sm:block text-left"><p class="text-sm font-bold leading-none"><%= patient.fullName %></p><p class="text-[11px] text-ink2">Patient</p></span>
      <i data-lucide="chevron-down" style="width:15px" class="text-ink2"></i>
     </button>
     <div id="pmenu" class="hidden absolute right-0 mt-2 w-44 bg-white border border-line rounded-xl shadow-lg p-1 text-sm">
@@ -67,7 +72,7 @@
  <div class="reveal grid sm:grid-cols-[1.4fr_1fr] gap-5">
   <div class="card rounded-3xl bg-gradient-to-br from-t3/15 to-soft border border-line p-6 flex items-center justify-between overflow-hidden">
    <div>
-    <h1 class="text-2xl font-extrabold">Good morning, <span class="text-t1">Rahul</span> 👋</h1>
+    <h1 class="text-2xl font-extrabold">Good morning, <span class="text-t1"><%= firstName %></span> 👋</h1>
     <p class="font-semibold mt-1">Your health information is ready when you need it.</p>
     <p class="text-sm text-ink2 mt-2 max-w-sm">JanSeva connects your health information with hospitals and medical teams, helping care begin before you arrive.</p>
    </div>
@@ -86,22 +91,22 @@
   <div class="card rounded-3xl bg-card border border-line p-6">
    <p class="text-xs font-bold text-ink2 uppercase">Profile Completion</p>
    <div class="mt-3 flex items-center gap-4">
-    <svg width="70" height="70" viewBox="0 0 70 70"><circle cx="35" cy="35" r="30" fill="none" stroke="#E5F2EF" stroke-width="8"/><circle id="ring" cx="35" cy="35" r="30" fill="none" stroke="#008F83" stroke-width="8" stroke-linecap="round" stroke-dasharray="188.5" stroke-dashoffset="188.5" transform="rotate(-90 35 35)"/></svg>
-    <div><p class="text-2xl font-extrabold">82%</p><p class="text-xs text-ink2">Rahul Sharma · 28 yrs<br>O+ · Patna, Bihar</p></div>
+    <svg width="70" height="70" viewBox="0 0 70 70"><circle cx="35" cy="35" r="30" fill="none" stroke="#E5F2EF" stroke-width="8"/><circle id="ring" data-completion="<%= profileCompletion %>" cx="35" cy="35" r="30" fill="none" stroke="#008F83" stroke-width="8" stroke-linecap="round" stroke-dasharray="188.5" stroke-dashoffset="188.5" transform="rotate(-90 35 35)"/></svg>
+    <div><p class="text-2xl font-extrabold"><%= profileCompletion %>%</p><p class="text-xs text-ink2"><%= patient.fullName %> · <%= age %> yrs<br><%= patient.bloodGroup || 'Blood group not added' %> · <%= location %></p></div>
    </div>
    <button class="btn mt-4 w-full rounded-full bg-t1 text-white py-2.5 text-sm font-semibold">Complete Profile →</button>
   </div>
  </div>
  <div class="reveal card rounded-3xl bg-warn/10 border border-warn/30 p-6">
   <p class="font-extrabold">Welcome to JanSeva! 🎉</p>
-  <p class="text-sm text-ink2 mt-1">Let's complete your health profile so it's ready when it matters. <b>3 of 5 steps completed.</b></p>
-  <div class="mt-3 h-2 bg-white rounded-full overflow-hidden"><div class="h-full bg-t1 rounded-full" style="width:60%"></div></div>
+  <p class="text-sm text-ink2 mt-1">Let's complete your health profile so it's ready when it matters. <b><%= profileCompletion %>% complete.</b></p>
+  <div class="mt-3 h-2 bg-white rounded-full overflow-hidden"><div class="profile-completion-bar h-full bg-t1 rounded-full" data-completion="<%= profileCompletion %>"></div></div>
   <ul class="mt-3 text-sm grid gap-1.5">
-   <li class="flex items-center gap-2 text-ok font-semibold"><i data-lucide="check-circle-2" style="width:16px"></i>Personal information</li>
-   <li class="flex items-center gap-2 text-ok font-semibold"><i data-lucide="check-circle-2" style="width:16px"></i>Emergency contact</li>
-   <li class="flex items-center gap-2 text-ok font-semibold"><i data-lucide="check-circle-2" style="width:16px"></i>Blood group</li>
-   <li class="flex items-center gap-2 text-ink2"><i data-lucide="circle" style="width:16px"></i>Medical conditions</li>
-   <li class="flex items-center gap-2 text-ink2"><i data-lucide="circle" style="width:16px"></i>Medical documents</li>
+  <li class="flex items-center gap-2 text-ok font-semibold"><i data-lucide="check-circle-2" style="width:16px"></i>Account information</li>
+  <li class="flex items-center gap-2 <%= patient.emergencyContact?.fullName ? 'text-ok font-semibold' : 'text-ink2' %>"><i data-lucide="<%= patient.emergencyContact?.fullName ? 'check-circle-2' : 'circle' %>" style="width:16px"></i>Emergency contact</li>
+  <li class="flex items-center gap-2 <%= patient.bloodGroup ? 'text-ok font-semibold' : 'text-ink2' %>"><i data-lucide="<%= patient.bloodGroup ? 'check-circle-2' : 'circle' %>" style="width:16px"></i>Blood group</li>
+  <li class="flex items-center gap-2 <%= patient.medicalHistory ? 'text-ok font-semibold' : 'text-ink2' %>"><i data-lucide="<%= patient.medicalHistory ? 'check-circle-2' : 'circle' %>" style="width:16px"></i>Medical conditions</li>
+  <li class="flex items-center gap-2 text-ink2"><i data-lucide="circle" style="width:16px"></i>Medical documents</li>
   </ul>
   <button class="btn mt-4 w-full rounded-full bg-t1 text-white py-2.5 text-sm font-semibold">Complete My Profile →</button>
   <p class="text-center text-xs text-t1 font-semibold mt-2 underline cursor-pointer">Skip for now</p>
@@ -127,10 +132,10 @@
  <div class="flex items-center justify-between"><h2 class="text-lg font-extrabold flex items-center gap-2">Your Health Profile <i data-lucide="info" style="width:14px" class="text-ink2"></i></h2><a class="text-sm font-bold text-t1">View Full Health Profile →</a></div>
  <p class="text-sm text-ink2 mt-0.5">Important information available to authorized healthcare providers.</p>
  <div class="mt-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-  <div class="card rounded-2xl bg-card border border-line p-5 flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-xl bg-t1/10 text-t1 grid place-items-center"><i data-lucide="droplet"></i></div><div><p class="text-xs text-ink2">Blood Group</p><p class="font-extrabold">O+</p></div></div><i data-lucide="chevron-right" class="text-ink2"></i></div>
-  <div class="card rounded-2xl bg-card border border-line p-5 flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-xl bg-t1/10 text-t1 grid place-items-center"><i data-lucide="flower"></i></div><div><p class="text-xs text-ink2">Allergies</p><p class="font-extrabold">Penicillin</p></div></div><i data-lucide="chevron-right" class="text-ink2"></i></div>
-  <div class="card rounded-2xl bg-card border border-line p-5 flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-xl bg-t1/10 text-t1 grid place-items-center"><i data-lucide="heart-pulse"></i></div><div><p class="text-xs text-ink2">Conditions</p><p class="font-extrabold">Hypertension</p></div></div><i data-lucide="chevron-right" class="text-ink2"></i></div>
-  <div class="card rounded-2xl bg-card border border-line p-5 flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-xl bg-t1/10 text-t1 grid place-items-center"><i data-lucide="pill"></i></div><div><p class="text-xs text-ink2">Current Medications</p><p class="font-extrabold">2 Active</p></div></div><i data-lucide="chevron-right" class="text-ink2"></i></div>
+    <div class="card rounded-2xl bg-card border border-line p-5 flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-xl bg-t1/10 text-t1 grid place-items-center"><i data-lucide="droplet"></i></div><div><p class="text-xs text-ink2">Blood Group</p><p class="font-extrabold"><%= patient.bloodGroup || 'Not added' %></p></div></div><i data-lucide="chevron-right" class="text-ink2"></i></div>
+    <div class="card rounded-2xl bg-card border border-line p-5 flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-xl bg-t1/10 text-t1 grid place-items-center"><i data-lucide="flower"></i></div><div><p class="text-xs text-ink2">Allergies</p><p class="font-extrabold"><%= patient.allergies || 'Not added' %></p></div></div><i data-lucide="chevron-right" class="text-ink2"></i></div>
+    <div class="card rounded-2xl bg-card border border-line p-5 flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-xl bg-t1/10 text-t1 grid place-items-center"><i data-lucide="heart-pulse"></i></div><div><p class="text-xs text-ink2">Medical History</p><p class="font-extrabold"><%= patient.medicalHistory || 'Not added' %></p></div></div><i data-lucide="chevron-right" class="text-ink2"></i></div>
+    <div class="card rounded-2xl bg-card border border-line p-5 flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-xl bg-t1/10 text-t1 grid place-items-center"><i data-lucide="pill"></i></div><div><p class="text-xs text-ink2">Medications</p><p class="font-extrabold"><%= patient.medications || 'Not added' %></p></div></div><i data-lucide="chevron-right" class="text-ink2"></i></div>
  </div>
 </section>
 
@@ -139,24 +144,17 @@
  <div class="reveal card rounded-3xl bg-card border border-line p-6">
   <div class="flex justify-between items-center"><h3 class="font-extrabold">Medical History</h3><a class="text-t1 text-sm font-bold">View All →</a></div>
   <ol class="mt-4 relative border-l-2 border-line pl-5 space-y-4">
-   <li><span class="absolute -left-[7px] w-3 h-3 rounded-full bg-t1"></span><p class="text-xs font-bold text-t1">2026</p><p class="font-semibold text-sm">General Health Checkup</p><p class="text-xs text-ink2">Dr. Anil Kumar · City Care Hospital</p><a class="text-xs font-bold text-t1">View Details →</a></li>
-   <li><span class="absolute -left-[7px] w-3 h-3 rounded-full bg-t1"></span><p class="text-xs font-bold text-t1">2025</p><p class="font-semibold text-sm">Cardiology Consultation</p><p class="text-xs text-ink2">Dr. Priya Singh · Heart Care Centre</p><a class="text-xs font-bold text-t1">View Details →</a></li>
-   <li><span class="absolute -left-[7px] w-3 h-3 rounded-full bg-line"></span><p class="text-xs font-bold text-ink2">2024</p><p class="font-semibold text-sm">Blood Test</p><p class="text-xs text-ink2">City Diagnostic Centre</p><a class="text-xs font-bold text-t1">View Details →</a></li>
+    <li><span class="absolute -left-[7px] w-3 h-3 rounded-full bg-line"></span><p class="font-semibold text-sm">No medical history added</p><p class="text-xs text-ink2">Your medical records will appear here.</p></li>
   </ol>
  </div>
  <div class="reveal card rounded-3xl bg-card border border-line p-6">
   <div class="flex justify-between items-center"><h3 class="font-extrabold">Medical Documents</h3><a class="text-t1 text-sm font-bold">View All →</a></div>
-  <div class="mt-4 grid gap-3 text-sm">
-   <div class="flex items-center justify-between"><div class="flex items-center gap-3"><i data-lucide="file-text" class="text-emerg"></i><div><p class="font-semibold">Blood Test Report</p><p class="text-xs text-ink2">12 Aug 2026 · PDF</p></div></div><div class="flex gap-2"><button class="rounded-full border border-line px-3 py-1 text-xs font-semibold">View</button><button class="rounded-full border border-line px-3 py-1 text-xs font-semibold">↓</button></div></div>
-   <div class="flex items-center justify-between"><div class="flex items-center gap-3"><i data-lucide="file-text" class="text-emerg"></i><div><p class="font-semibold">Prescription</p><p class="text-xs text-ink2">03 Aug 2026 · PDF</p></div></div><div class="flex gap-2"><button class="rounded-full border border-line px-3 py-1 text-xs font-semibold">View</button><button class="rounded-full border border-line px-3 py-1 text-xs font-semibold">↓</button></div></div>
-   <div class="flex items-center justify-between"><div class="flex items-center gap-3"><i data-lucide="file-text" class="text-emerg"></i><div><p class="font-semibold">Discharge Summary</p><p class="text-xs text-ink2">17 May 2026 · PDF</p></div></div><div class="flex gap-2"><button class="rounded-full border border-line px-3 py-1 text-xs font-semibold">View</button><button class="rounded-full border border-line px-3 py-1 text-xs font-semibold">↓</button></div></div>
-  </div>
+  <p class="mt-4 text-sm text-ink2">No medical documents uploaded yet.</p>
  </div>
  <div class="reveal card rounded-3xl bg-card border border-line p-6">
   <div class="flex justify-between items-center"><h3 class="font-extrabold">Emergency Contacts</h3><a class="text-t1 text-sm font-bold">+ Add</a></div>
   <div class="mt-4 grid gap-3">
-   <div class="flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-t1/10 text-t1 grid place-items-center font-bold text-sm">RS</div><div><p class="font-semibold text-sm">Rajesh Sharma</p><p class="text-xs text-ink2">Father · +91 98765 43210</p></div></div><button class="rounded-full bg-t1/10 text-t1 p-2"><i data-lucide="phone" style="width:15px"></i></button></div>
-   <div class="flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-t1/10 text-t1 grid place-items-center font-bold text-sm">SS</div><div><p class="font-semibold text-sm">Sunita Sharma</p><p class="text-xs text-ink2">Mother · +91 98765 43211</p></div></div><button class="rounded-full bg-t1/10 text-t1 p-2"><i data-lucide="phone" style="width:15px"></i></button></div>
+    <div class="flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full bg-t1/10 text-t1 grid place-items-center font-bold text-sm"><%= emergencyInitials %></div><div><p class="font-semibold text-sm"><%= patient.emergencyContact?.fullName || 'No emergency contact' %></p><p class="text-xs text-ink2"><%= patient.emergencyContact?.relationship || 'Relationship not added' %> · <%= patient.emergencyContact?.mobNo || 'Number not added' %></p></div></div><button class="rounded-full bg-t1/10 text-t1 p-2"><i data-lucide="phone" style="width:15px"></i></button></div>
   </div>
  </div>
 </div>
@@ -164,8 +162,8 @@
 <!-- READINESS + APPT + ACTIVITY -->
 <div class="grid lg:grid-cols-3 gap-5">
  <div class="reveal card rounded-3xl bg-card border border-line p-6">
-  <div class="flex justify-between"><h3 class="font-extrabold">Emergency Readiness</h3><span class="font-extrabold text-t1">78%</span></div>
-  <div class="mt-3 h-2 bg-soft rounded-full overflow-hidden"><div class="h-full bg-t1 rounded-full" style="width:78%"></div></div>
+  <div class="flex justify-between"><h3 class="font-extrabold">Emergency Readiness</h3><span class="font-extrabold text-t1"><%= profileCompletion %>%</span></div>
+  <div class="mt-3 h-2 bg-soft rounded-full overflow-hidden"><div class="profile-completion-bar h-full bg-t1 rounded-full" data-completion="<%= profileCompletion %>"></div></div>
   <ul class="mt-3 text-sm grid gap-1.5">
    <li class="flex items-center gap-2 text-ok font-semibold"><i data-lucide="check-circle-2" style="width:16px"></i>Personal information completed</li>
    <li class="flex items-center gap-2 text-ok font-semibold"><i data-lucide="check-circle-2" style="width:16px"></i>Blood group added</li>
@@ -177,20 +175,11 @@
  </div>
  <div class="reveal card rounded-3xl bg-card border border-line p-6">
   <div class="flex justify-between items-center"><h3 class="font-extrabold">Upcoming Appointments</h3><a class="text-t1 text-sm font-bold">View All →</a></div>
-  <div class="mt-4 rounded-2xl bg-soft p-4">
-   <div class="flex gap-3"><div class="text-center bg-white rounded-xl px-3 py-1.5 border border-line"><p class="font-extrabold text-lg leading-none">25</p><p class="text-[10px] text-ink2">SEP</p></div>
-   <div><p class="font-semibold text-sm">Dr. Anil Kumar</p><p class="text-xs text-ink2">General Physician · City Care Hospital</p><p class="text-xs text-ink2 flex items-center gap-1 mt-0.5"><i data-lucide="clock" style="width:12px"></i>10:30 AM</p></div></div>
-   <div class="mt-3 flex gap-2"><button class="flex-1 rounded-full border border-line py-1.5 text-xs font-semibold">View Appointment</button><button class="flex-1 rounded-full border border-line py-1.5 text-xs font-semibold">Directions</button></div>
-  </div>
+  <p class="mt-4 text-sm text-ink2">No upcoming appointments.</p>
  </div>
  <div class="reveal card rounded-3xl bg-card border border-line p-6">
   <h3 class="font-extrabold">Recent Activity</h3>
-  <ul class="mt-4 text-sm grid gap-3">
-   <li class="flex gap-3"><span class="w-2 h-2 rounded-full bg-t1 mt-1.5"></span><div><p class="font-semibold text-xs text-ink2">Today</p><p>Profile information updated</p></div></li>
-   <li class="flex gap-3"><span class="w-2 h-2 rounded-full bg-t1 mt-1.5"></span><div><p class="font-semibold text-xs text-ink2">Yesterday</p><p>Blood report uploaded</p></div></li>
-   <li class="flex gap-3"><span class="w-2 h-2 rounded-full bg-t1 mt-1.5"></span><div><p class="font-semibold text-xs text-ink2">12 Aug</p><p>Prescription added</p></div></li>
-   <li class="flex gap-3"><span class="w-2 h-2 rounded-full bg-t1 mt-1.5"></span><div><p class="font-semibold text-xs text-ink2">05 Aug</p><p>Health profile reviewed</p></div></li>
-  </ul>
+  <p class="mt-4 text-sm text-ink2">No recent activity.</p>
  </div>
 </div>
 
@@ -200,7 +189,7 @@
  <div class="flex gap-3"><button class="rounded-full border border-line bg-white px-5 py-2.5 text-sm font-semibold">Privacy Settings</button><button class="rounded-full bg-t1 text-white px-5 py-2.5 text-sm font-semibold">View Access Information</button></div>
 </div>
 
-<p class="text-center text-xs text-ink2 pb-4">Demo dashboard — fictional patient data for presentation purposes.</p>
+<p class="text-center text-xs text-ink2 pb-4">Your JanSeva health dashboard.</p>
 </main>
 </div>
 </div>
@@ -224,5 +213,5 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.460.0/lucide.min.js"></script>
-<script src="dashboard.js" defer></script>
+<script src="/js/patient/patientDash.js" defer></script>
 </body></html>
